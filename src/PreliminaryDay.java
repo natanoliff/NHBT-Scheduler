@@ -40,6 +40,7 @@ public class PreliminaryDay {
 	public void organizeTournament() {
 
 		Collections.sort(mensTeams);
+		Collections.sort(womensTeams);
 		//First, figure out the number of game slots needed
 		numberOfGameSlots = determineNumberOfGameSlots(mensTeams.size());
 		numberOfGameSlots += determineNumberOfGameSlots(womensTeams.size());
@@ -49,6 +50,7 @@ public class PreliminaryDay {
 		womensDivisions = divideTourneyIntoDivisions(womensTeams.size(),womensTeams);
 		totalDivisions.addAll(mensDivisions);
 		totalDivisions.addAll(womensDivisions);
+		Collections.sort(totalDivisions);
 
 		//Now fill in the schedule
 		initializeSchedule();
@@ -61,21 +63,57 @@ public class PreliminaryDay {
 
 		//Get a list of all the games
 		List<Game> games = turnDivisionsIntoGames();
-		//Sort games based on constraints
+		
 		//Add the games
 		addGamesToTourney(games);
 	}
 
+	/** This method goes through each games and adds it to the tourney*/
 	private void addGamesToTourney(List<Game> games) {
-
+		
+		//Reverse the schedule, as the most constrained teams come first
+		//So we want these teams to play later
+		Collections.reverse(schedule);
+	
 		//Loop through each game
 		for (Game game: games) {
+			
+			//Place that game into the schedule
 			placeGameIntoSlot(game);
 		}
 	}
 
 	private void placeGameIntoSlot(Game game) {
-
+		boolean gamePlaced = false;
+		int index = 0;
+		
+		//Try adding the game to the first slot
+		do {
+			Game slot = schedule.get(index);
+	
+			//Check if it can be added
+			if (!slot.filled &&
+					game.homeTeam.canPlay(slot, minutesBetweenGames) &&
+					game.awayTeam.canPlay(slot, minutesBetweenGames)) {
+				
+				//If so, add the game there
+				schedule.set(index, game);
+				//Marked it as filled
+				slot.filled = true;
+				gamePlaced = true;
+				//Update the times info
+				game.timeSlot = slot.timeSlot;
+				game.awayTeam.gameTimes.add(game.timeSlot);
+				game.homeTeam.gameTimes.add(game.timeSlot);
+				
+			} 
+			//Increment index
+			index++;
+		
+		//Keep going if game is not placed	
+		} while (!gamePlaced);
+		
+		
 	}
 
 	/** This method is a for loop that goes through all the different 
@@ -170,11 +208,9 @@ public class PreliminaryDay {
 
 		//setting up all needed variables
 		List<Team> teamsCopy = new ArrayList<Team>(teams);
-		int divisionIndex = 0;
 		int numberOfDivisions = numberOfTeams/4;
 		int numberOfFourTeamDivisions = 
 				numberOfTeams/4 - numberOfTeams % 4;
-		int numberOfFiveTeamDivisions = numberOfTeams % 4;
 		int index;
 
 		//Create an array list of divisions
@@ -277,6 +313,25 @@ public class PreliminaryDay {
 	public void addCourt(String courtName) {
 		courts.add(new Court(courtName));
 	}
+	
+	public void addTeam(Team team) {
+
+		//Add team to general list of teams
+		teams.add(team);
+
+		//If team is mens...
+		if(team.gender.equals(Gender.MEN)) {
+
+			//Add it to men team list
+			mensTeams.add(team);
+
+			//Else, it is a womens team
+		} else {
+
+			//Add it to womens team list
+			womensTeams.add(team);
+		}
+	}
 
 	/**Adds a new team to the list of teams for the correct gender*/ 
 	public void addTeam(String school, String captain, Gender teamGender,
@@ -311,6 +366,10 @@ public class PreliminaryDay {
 
 
 	}
+	
+	public void printSchedule() {
+		
+	}
 
 	/**This method simply lists the courts in string form*/
 	public void listCourts() {
@@ -329,6 +388,19 @@ public class PreliminaryDay {
 			System.out.println("Team" + (teamNumber++) + ": " + team.school);
 		}
 	}
+
+/*	//Remove all the null games
+	public void removeNullGames() {
+		int size = schedule.size();
+		for (int index = 0; index < size; index++) {
+			if (schedule.get(index).homeTeam == null) {
+				schedule.remove(index);
+			}
+		}
+		
+	}*/
+	
+	
 
 
 }

@@ -18,6 +18,7 @@ public class Team implements Comparable<Team>{
 	Gender gender;
 	LocalTime arrivalTime;
 	ArrivalDay arrivalDay;
+	List<LocalTime> gameTimes;
 
 	// constructor with team name and gender
 	public Team(String school, String captainName, Gender gender, String arrivalTime, ArrivalDay arrivalDay) {
@@ -26,9 +27,27 @@ public class Team implements Comparable<Team>{
 		this.arrivalTime = LocalTime.parse(arrivalTime); 
 		this.arrivalDay = arrivalDay;
 		this.gender = gender;
+		this.gameTimes = new ArrayList<LocalTime>();
 	}
 	
-	
+	public boolean canPlay(Game gameSlot, long timePerGame) {
+		LocalTime gameTime = gameSlot.timeSlot;
+		
+		//Loop through each of the game times that this team is scheduled for
+		for (LocalTime scheduledTime: gameTimes) {
+			
+			//Check if the current game time is within two slots of another
+			//Time slot that this team is playing . . .
+			if (Math.abs(MINUTES.between(gameTime, scheduledTime)) <= 2 * timePerGame) {
+				
+				//Then return false
+				return false;
+			}
+		}
+		
+		//If not, then return true
+		return true;
+	}
 
 
 	@Override
