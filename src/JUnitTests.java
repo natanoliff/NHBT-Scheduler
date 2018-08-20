@@ -66,7 +66,7 @@ class JUnitTests {
 		tourney.addTeam("Penn State","Rosenstein", Gender.WOMEN, "21:15", ArrivalDay.THURSDAY);
 		tourney.addTeam("Maryland","Warshawsky", Gender.WOMEN, "06:00", ArrivalDay.FRIDAY);
 		tourney.addTeam("NYU","Chavel", Gender.WOMEN, "20:45", ArrivalDay.THURSDAY);
-		tourney.addTeam("Maryland", "Oliff", Gender.WOMEN, "20:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Maryland", "Loh", Gender.WOMEN, "20:00", ArrivalDay.THURSDAY);
 		tourney.addTeam("Virginia","Goldsmith", Gender.WOMEN, "22:15", ArrivalDay.THURSDAY);
 		tourney.addTeam("Northwestern","Benmelech", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
 		tourney.addTeam("Texas","Yaron", Gender.WOMEN, "09:15", ArrivalDay.FRIDAY);
@@ -76,9 +76,8 @@ class JUnitTests {
 		//Do the magic
 		tourney.organizeTournament();
 		tourney.scheduleTournament();
-		/*tourney.removeNullGames();*/
+		System.out.println(tourney);
 		
-		System.out.println("done");
 	}
 
 }

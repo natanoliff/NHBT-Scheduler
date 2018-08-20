@@ -1,6 +1,9 @@
 import java.util.HashSet;
 import java.util.Set;
 import static java.time.temporal.ChronoUnit.MINUTES;
+
+import java.time.LocalTime;
+
 import Constraints.Constraint;
 import enums.ArrivalDay;
 import enums.Gender;
@@ -41,10 +44,10 @@ public class MarylandTeam extends Team implements Comparable<Team> {
 	}
 
 	@Override 
-	public boolean canPlay(Game gameSlot, long timePerGame) {
+	public boolean canPlay(LocalTime gameTime, long timePerGame) {
 
 		//Check if it meets the regular canPlay requirements
-		if (!super.canPlay(gameSlot, timePerGame)) {
+		if (!super.canPlay(gameTime, timePerGame)) {
 
 			//if not, return false
 			return false;
@@ -53,7 +56,7 @@ public class MarylandTeam extends Team implements Comparable<Team> {
 		//Next check if all constraints are met
 		for (Constraint constraint: constraints) {
 
-			if (!constraint.fufilled(gameSlot.timeSlot)) {
+			if (!constraint.fufilled(gameTime)) {
 
 				//If not fulfilled, return false
 				return false;

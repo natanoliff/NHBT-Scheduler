@@ -30,15 +30,14 @@ public class Team implements Comparable<Team>{
 		this.gameTimes = new ArrayList<LocalTime>();
 	}
 	
-	public boolean canPlay(Game gameSlot, long timePerGame) {
-		LocalTime gameTime = gameSlot.timeSlot;
+	public boolean canPlay(LocalTime gameTime, long timePerGame) {
 		
 		//Loop through each of the game times that this team is scheduled for
 		for (LocalTime scheduledTime: gameTimes) {
 			
 			//Check if the current game time is within two slots of another
 			//Time slot that this team is playing . . .
-			if (Math.abs(MINUTES.between(gameTime, scheduledTime)) <= 2 * timePerGame) {
+			if (Math.abs(MINUTES.between(gameTime, scheduledTime)) < 2 * timePerGame) {
 				
 				//Then return false
 				return false;
@@ -52,7 +51,7 @@ public class Team implements Comparable<Team>{
 
 	@Override
 	public String toString() {
-		return school + " - " + captainName;
+		return school + " (" + captainName  + "-" +  gameTimes.size() + ")";
 	}
 
 	@Override

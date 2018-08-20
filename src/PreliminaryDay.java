@@ -10,7 +10,7 @@ import enums.Gender;
 public class PreliminaryDay {
 
 	//Variables
-	List<Game> schedule;
+	List<TimeSlot> schedule;
 	List<Court> courts;
 	List<Team> teams, mensTeams, womensTeams;
 	List<Division> mensDivisions, womensDivisions, totalDivisions; 
@@ -20,7 +20,7 @@ public class PreliminaryDay {
 
 	/**Default constructor, initializes everything to be 0 or empty*/
 	public PreliminaryDay() {
-		this.schedule = new ArrayList<Game>();
+		this.schedule = new ArrayList<TimeSlot>();
 		this.courts = new ArrayList<Court>();
 		this.teams = new ArrayList<Team>();
 		this.mensTeams = new ArrayList<Team>();
@@ -74,13 +74,16 @@ public class PreliminaryDay {
 		//Reverse the schedule, as the most constrained teams come first
 		//So we want these teams to play later
 		Collections.reverse(schedule);
-	
+		int index = 1;
 		//Loop through each game
 		for (Game game: games) {
 			
+			Collections.shuffle(schedule);
 			//Place that game into the schedule
 			placeGameIntoSlot(game);
+			System.out.println("Game Number " + index++ + "Placed");
 		}
+		Collections.sort(schedule);
 	}
 
 	private void placeGameIntoSlot(Game game) {
@@ -89,20 +92,29 @@ public class PreliminaryDay {
 		
 		//Try adding the game to the first slot
 		do {
-			Game slot = schedule.get(index);
+			TimeSlot slot = schedule.get(index);
+			LocalTime gameTime = slot.time;
 	
 			//Check if it can be added
 			if (!slot.filled &&
-					game.homeTeam.canPlay(slot, minutesBetweenGames) &&
-					game.awayTeam.canPlay(slot, minutesBetweenGames)) {
+					game.homeTeam.canPlay(gameTime, minutesBetweenGames) &&
+					game.awayTeam.canPlay(gameTime, minutesBetweenGames)) {
 				
 				//If so, add the game there
-				schedule.set(index, game);
-				//Marked it as filled
-				slot.filled = true;
+				slot.games.add(game);
+				
+				//If the slot is filled for each court, then mark it as filled
+				if (slot.games.size() == courts.size()) {
+					slot.filled = true;
+				}
+				
+				//Game is placed
 				gamePlaced = true;
-				//Update the times info
-				game.timeSlot = slot.timeSlot;
+				
+				//Update the times info of the game object
+				game.timeSlot = slot.time;
+				 
+				//update the times for each team
 				game.awayTeam.gameTimes.add(game.timeSlot);
 				game.homeTeam.gameTimes.add(game.timeSlot);
 				
@@ -112,7 +124,6 @@ public class PreliminaryDay {
 		
 		//Keep going if game is not placed	
 		} while (!gamePlaced);
-		
 		
 	}
 
@@ -178,25 +189,14 @@ public class PreliminaryDay {
 	private void initializeSchedule() {
 
 		LocalTime currentTimeToAdd = LocalTime.parse(timeOfFirstGame);
-		int numberOfGames = numberOfGameSlots * courts.size();
-		int numberOfCourts = courts.size();
-		int courtNumber = 0;
+	
 		//Next, we set up the schedule. we use a for loop to figure out how many
 		//different slots we need to set up
-		for (int index = 0; index < numberOfGames; index++) {
+		for (int index = 0; index < numberOfGameSlots; index++) {
 			
 			//Add the Game
-			schedule.add(new Game(currentTimeToAdd, courts.get(courtNumber)));
-			
-			//Increment the court number 
-			if (++courtNumber >= numberOfCourts) {
-				//If we have gone through all the courts at that time slot,
-				//Then reset the court number back to 1
-				courtNumber = 0;
-				//Then move the timeSlot forward
-				currentTimeToAdd = currentTimeToAdd.plusMinutes(minutesBetweenGames);
-			}
-
+			schedule.add(new TimeSlot(currentTimeToAdd));
+			currentTimeToAdd = currentTimeToAdd.plusMinutes(minutesBetweenGames);
 		}
 	}
 
@@ -367,8 +367,13 @@ public class PreliminaryDay {
 
 	}
 	
-	public void printSchedule() {
-		
+	@Override 
+	public String toString() {
+		String string = "";
+		for (TimeSlot timeSlot: schedule) {
+			string += timeSlot + "\n";
+		}
+		return string;
 	}
 
 	/**This method simply lists the courts in string form*/
@@ -389,16 +394,7 @@ public class PreliminaryDay {
 		}
 	}
 
-/*	//Remove all the null games
-	public void removeNullGames() {
-		int size = schedule.size();
-		for (int index = 0; index < size; index++) {
-			if (schedule.get(index).homeTeam == null) {
-				schedule.remove(index);
-			}
-		}
-		
-	}*/
+
 	
 	
 
