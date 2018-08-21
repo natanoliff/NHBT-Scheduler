@@ -60,16 +60,26 @@ public class PreliminaryDay {
 	/**This is the scheduling method. It takes all the teams and places them
 	 *in the schedule  */
 	public void scheduleTournament() {
+		boolean validTourney = false;
 
 		//Get a list of all the games
 		List<Game> games = turnDivisionsIntoGames();
 		
-		//Add the games
-		addGamesToTourney(games);
+		//Keep trying add games until viable solution is found
+		while (!validTourney) {
+			//clear games out
+			for (Game game: games) {
+				game.awayTeam.gameTimes.clear();
+				game.homeTeam.gameTimes.clear();
+				game.filled = false;
+			}
+			validTourney = addGamesToTourney(games);
+		}
+		
 	}
 
 	/** This method goes through each games and adds it to the tourney*/
-	private void addGamesToTourney(List<Game> games) {
+	private boolean addGamesToTourney(List<Game> games) {
 		
 		//Reverse the schedule, as the most constrained teams come first
 		//So we want these teams to play later
@@ -79,14 +89,26 @@ public class PreliminaryDay {
 		for (Game game: games) {
 			
 			Collections.shuffle(schedule);
+			
 			//Place that game into the schedule
-			placeGameIntoSlot(game);
-			System.out.println("Game Number " + index++ + "Placed");
+			if (!placeGameIntoSlot(game)) {
+				
+				//If fails, erase and start again
+				for (TimeSlot timeSlot: schedule) {
+					timeSlot.games.clear();
+					timeSlot.filled = false;
+				}
+				return false;
+			}
+			
+			System.out.println("Game Number " + index++ + " Placed");
 		}
+		
 		Collections.sort(schedule);
+		return true;
 	}
 
-	private void placeGameIntoSlot(Game game) {
+	private boolean placeGameIntoSlot(Game game) {
 		boolean gamePlaced = false;
 		int index = 0;
 		
@@ -120,11 +142,14 @@ public class PreliminaryDay {
 				
 			} 
 			//Increment index
-			index++;
+			if (++index >= numberOfGameSlots) {
+				return false;
+			}
 		
 		//Keep going if game is not placed	
 		} while (!gamePlaced);
 		
+		return true;
 	}
 
 	/** This method is a for loop that goes through all the different 

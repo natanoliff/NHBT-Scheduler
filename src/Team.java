@@ -37,7 +37,7 @@ public class Team implements Comparable<Team>{
 			
 			//Check if the current game time is within two slots of another
 			//Time slot that this team is playing . . .
-			if (Math.abs(MINUTES.between(gameTime, scheduledTime)) < 2 * timePerGame) {
+			if (Math.abs(MINUTES.between(gameTime, scheduledTime)) <= 2 * timePerGame) {
 				
 				//Then return false
 				return false;
