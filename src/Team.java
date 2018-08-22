@@ -51,7 +51,7 @@ public class Team implements Comparable<Team>{
 
 	@Override
 	public String toString() {
-		return school + " (" + captainName  + "-" +  gameTimes.size() + ")";
+		return school + " (" + captainName  +  ")";
 	}
 
 	@Override

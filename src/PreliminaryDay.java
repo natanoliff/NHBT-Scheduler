@@ -1,4 +1,13 @@
 import java.util.*;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.awt.EventQueue;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -8,6 +17,153 @@ import enums.ArrivalDay;
 import enums.Gender;
 
 public class PreliminaryDay {
+	
+	public static final String FILE_PATH = "C:\\Users\\Natan OIiff\\Documents\\sample.xlsx";
+
+	public static void main(String args[]) throws IOException, InvalidFormatException {
+		Workbook workbook = WorkbookFactory.create(new File(FILE_PATH));
+		Sheet tourneyInfo = workbook.getSheetAt(0);
+		System.out.println(tourneyInfo);
+		DataFormatter dataFormatter = new DataFormatter();
+		for (Row row: tourneyInfo) {
+            for(Cell cell: row) {
+                String cellValue = dataFormatter.formatCellValue(cell);
+                System.out.print(cellValue + "\t");
+            }
+            System.out.println();
+        }
+		
+		
+		
+		
+		
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					GUI frame = new GUI();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		//Create tourney
+		PreliminaryDay tourney = new PreliminaryDay();
+
+		//Add courts
+		tourney.addCourt("Eppley1");
+		tourney.addCourt("Eppley2");
+		tourney.addCourt("Eppley3");
+		tourney.addCourt("Eppley4");
+		tourney.addCourt("Eppley5");
+
+		//Add timining info
+		tourney.timeOfFirstGame = "08:30";
+		tourney.minutesBetweenGames = 35;
+
+		//Add Mens teams
+		tourney.addTeam("Northwestern","Oliff", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Miami","Miller", Gender.MEN, "21:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Indiana","Nagar", Gender.MEN, "19:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Kansas","Wiggins", Gender.MEN, "20:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Michigan","Mendelsohn", Gender.MEN, "08:00", ArrivalDay.FRIDAY);
+		tourney.addTeam("Columbia","Rapoport", Gender.MEN, "22:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Columbia","Lederer", Gender.MEN, "07:00", ArrivalDay.FRIDAY);
+		tourney.addTeam("Maryland", "Klausner", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Penn","Charnoff", Gender.MEN, "23:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Brandeis","Eisenstein", Gender.MEN, "23:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Duke","Williamson", Gender.MEN, "00:10", ArrivalDay.FRIDAY);
+		tourney.addTeam("Syracuse","Greenberg", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Yeshiva","Bokor", Gender.MEN, "20:15", ArrivalDay.THURSDAY);
+		tourney.addTeam("Yeshiva","Leifer", Gender.MEN, "20:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Chicago","Elias", Gender.MEN, "18:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Baruch","Singer", Gender.MEN, "19:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Penn State","Jones", Gender.MEN, "21:15", ArrivalDay.THURSDAY);
+		tourney.addTeam("Hopkins","Feingold", Gender.MEN, "06:00", ArrivalDay.FRIDAY);
+		tourney.addTeam("NYU","Best", Gender.MEN, "20:45", ArrivalDay.THURSDAY);
+		tourney.addTeam("Virginia","Schwartz", Gender.MEN, "22:15", ArrivalDay.THURSDAY);
+		tourney.addTeam("WashU","Helfand", Gender.MEN, "20:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Texas","Durant", Gender.MEN, "09:00", ArrivalDay.FRIDAY);
+		tourney.addTeam("Iowa","Smart", Gender.MEN, "18:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("North Carolina","Jordan", Gender.MEN, "20:10", ArrivalDay.THURSDAY);
+		//tourney.addTeam("Maryland", "Oliff", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
+		MarylandTeam marylandOliff = new MarylandTeam 
+				("Maryland", "Oliff", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
+		marylandOliff.addConstraint("12:00", "14:00");
+		tourney.addTeam(marylandOliff);
+
+		//Add women teams
+		tourney.addTeam("HebrewU","Harris", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Baylor","Griner", Gender.WOMEN, "00:10", ArrivalDay.FRIDAY);
+		tourney.addTeam("Notre Dame","Loyd", Gender.WOMEN, "20:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Yeshiva","Gordon", Gender.WOMEN, "20:15", ArrivalDay.THURSDAY);
+		tourney.addTeam("Yeshiva","Miller", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Illinois","Retsky", Gender.WOMEN, "18:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Baruch","Stein", Gender.WOMEN, "19:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Penn State","Rosenstein", Gender.WOMEN, "21:15", ArrivalDay.THURSDAY);
+		tourney.addTeam("Maryland","Warshawsky", Gender.WOMEN, "06:00", ArrivalDay.FRIDAY);
+		tourney.addTeam("NYU","Chavel", Gender.WOMEN, "20:45", ArrivalDay.THURSDAY);
+		tourney.addTeam("Maryland", "Loh", Gender.WOMEN, "20:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Virginia","Goldsmith", Gender.WOMEN, "22:15", ArrivalDay.THURSDAY);
+		tourney.addTeam("Northwestern","Benmelech", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
+		tourney.addTeam("Texas","Yaron", Gender.WOMEN, "09:15", ArrivalDay.FRIDAY);
+		tourney.addTeam("UMBC","Smart", Gender.WOMEN, "18:00", ArrivalDay.THURSDAY);
+		tourney.addTeam("Michigan","Miller", Gender.WOMEN, "20:10", ArrivalDay.THURSDAY);
+
+		//Do the magic
+		tourney.organizeTournament();
+		tourney.scheduleTournament();
+		System.out.println(tourney);
+		
+		Workbook outputWorkbook = new XSSFWorkbook();
+		CreationHelper createHelper = outputWorkbook.getCreationHelper();
+		
+		Sheet sheet = outputWorkbook.createSheet("Tournament");
+		
+		Font headerFont = outputWorkbook.createFont();
+		headerFont.setBold(true);
+		headerFont.setFontHeightInPoints((short) 14);
+		headerFont.setColor(IndexedColors.BLACK.getIndex());
+		
+		CellStyle headerCellStyle = outputWorkbook.createCellStyle();
+		headerCellStyle.setFont(headerFont);
+		
+		Row headerRow = sheet.createRow(0);
+		
+		int numberOfCourts = tourney.courts.size();
+		for (int i = 1; i <= numberOfCourts; i++ ) {
+			Cell cell = headerRow.createCell(i);
+			cell.setCellValue(tourney.courts.get(i-1).name);
+			cell.setCellStyle(headerCellStyle);
+		}
+		
+		int rowNum = 1;
+		
+		for (TimeSlot timeSlot: tourney.schedule) {
+			Row row = sheet.createRow(rowNum++);
+			
+			row.createCell(0).setCellValue(timeSlot.time.toString());
+			
+			int colNum = 1;
+			for (Game game: timeSlot.games) {
+				
+				
+				row.createCell(colNum++).setCellValue(game.toString());
+				
+			}
+		}
+		
+		for (int i = 0; i < numberOfCourts; i++) {
+			sheet.autoSizeColumn(i);
+		}
+		
+		FileOutputStream fileOutput = new FileOutputStream("C:\\\\Users\\\\Natan OIiff\\\\Documents\\\\sample.xlsx");
+		outputWorkbook.write(fileOutput);
+		fileOutput.close();
+		outputWorkbook.close();
+	}
 
 	//Variables
 	List<TimeSlot> schedule;
@@ -64,7 +220,7 @@ public class PreliminaryDay {
 
 		//Get a list of all the games
 		List<Game> games = turnDivisionsIntoGames();
-		
+
 		//Keep trying add games until viable solution is found
 		while (!validTourney) {
 			//clear games out
@@ -75,24 +231,24 @@ public class PreliminaryDay {
 			}
 			validTourney = addGamesToTourney(games);
 		}
-		
+
 	}
 
 	/** This method goes through each games and adds it to the tourney*/
 	private boolean addGamesToTourney(List<Game> games) {
-		
+
 		//Reverse the schedule, as the most constrained teams come first
 		//So we want these teams to play later
 		Collections.reverse(schedule);
 		int index = 1;
 		//Loop through each game
 		for (Game game: games) {
-			
+
 			Collections.shuffle(schedule);
-			
+
 			//Place that game into the schedule
 			if (!placeGameIntoSlot(game)) {
-				
+
 				//If fails, erase and start again
 				for (TimeSlot timeSlot: schedule) {
 					timeSlot.games.clear();
@@ -100,10 +256,10 @@ public class PreliminaryDay {
 				}
 				return false;
 			}
-			
-			System.out.println("Game Number " + index++ + " Placed");
-		}
-		
+
+/*			System.out.println("Game Number " + index++ + " Placed");
+*/		}
+
 		Collections.sort(schedule);
 		return true;
 	}
@@ -111,44 +267,44 @@ public class PreliminaryDay {
 	private boolean placeGameIntoSlot(Game game) {
 		boolean gamePlaced = false;
 		int index = 0;
-		
+
 		//Try adding the game to the first slot
 		do {
 			TimeSlot slot = schedule.get(index);
 			LocalTime gameTime = slot.time;
-	
+
 			//Check if it can be added
 			if (!slot.filled &&
 					game.homeTeam.canPlay(gameTime, minutesBetweenGames) &&
 					game.awayTeam.canPlay(gameTime, minutesBetweenGames)) {
-				
+
 				//If so, add the game there
 				slot.games.add(game);
-				
+
 				//If the slot is filled for each court, then mark it as filled
 				if (slot.games.size() == courts.size()) {
 					slot.filled = true;
 				}
-				
+
 				//Game is placed
 				gamePlaced = true;
-				
+
 				//Update the times info of the game object
 				game.timeSlot = slot.time;
-				 
+
 				//update the times for each team
 				game.awayTeam.gameTimes.add(game.timeSlot);
 				game.homeTeam.gameTimes.add(game.timeSlot);
-				
+
 			} 
 			//Increment index
 			if (++index >= numberOfGameSlots) {
 				return false;
 			}
-		
-		//Keep going if game is not placed	
+
+			//Keep going if game is not placed	
 		} while (!gamePlaced);
-		
+
 		return true;
 	}
 
@@ -214,11 +370,11 @@ public class PreliminaryDay {
 	private void initializeSchedule() {
 
 		LocalTime currentTimeToAdd = LocalTime.parse(timeOfFirstGame);
-	
+
 		//Next, we set up the schedule. we use a for loop to figure out how many
 		//different slots we need to set up
 		for (int index = 0; index < numberOfGameSlots; index++) {
-			
+
 			//Add the Game
 			schedule.add(new TimeSlot(currentTimeToAdd));
 			currentTimeToAdd = currentTimeToAdd.plusMinutes(minutesBetweenGames);
@@ -296,7 +452,7 @@ public class PreliminaryDay {
 				//Change boolean to reflect that
 				viableTeamFound = true;
 
-			//If not found, move the index to check the next team
+				//If not found, move the index to check the next team
 			} else {
 				index++;
 			}
@@ -338,7 +494,7 @@ public class PreliminaryDay {
 	public void addCourt(String courtName) {
 		courts.add(new Court(courtName));
 	}
-	
+
 	public void addTeam(Team team) {
 
 		//Add team to general list of teams
@@ -391,7 +547,7 @@ public class PreliminaryDay {
 
 
 	}
-	
+
 	@Override 
 	public String toString() {
 		String string = "";
@@ -420,8 +576,8 @@ public class PreliminaryDay {
 	}
 
 
-	
-	
+
+
 
 
 }
