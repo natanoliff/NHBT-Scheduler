@@ -30,7 +30,13 @@ public class Team implements Comparable<Team>{
 		this.gameTimes = new ArrayList<LocalTime>();
 	}
 	
+	/**This method makes sure that */
 	public boolean canPlay(LocalTime gameTime, long timePerGame) {
+		
+		//First make sure the team isn't playing within an hour when they arrive
+		if (this.arrivalDay.equals(ArrivalDay.FRIDAY) && gameTime.isBefore(arrivalTime.plusMinutes(60))) {
+			return false;
+		}
 		
 		//Loop through each of the game times that this team is scheduled for
 		for (LocalTime scheduledTime: gameTimes) {

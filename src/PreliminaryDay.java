@@ -7,6 +7,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 import java.awt.EventQueue;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -17,149 +22,224 @@ import enums.ArrivalDay;
 import enums.Gender;
 
 public class PreliminaryDay {
-	
+
 	public static final String FILE_PATH = "C:\\Users\\Natan OIiff\\Documents\\sample.xlsx";
 
 	public static void main(String args[]) throws IOException, InvalidFormatException {
-		Workbook workbook = WorkbookFactory.create(new File(FILE_PATH));
-		Sheet tourneyInfo = workbook.getSheetAt(0);
-		System.out.println(tourneyInfo);
-		DataFormatter dataFormatter = new DataFormatter();
-		for (Row row: tourneyInfo) {
-            for(Cell cell: row) {
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
-            }
-            System.out.println();
-        }
-		
-		
-		
-		
-		
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GUI frame = new GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		//Create tourney
+
+		//Create Tournament instance
 		PreliminaryDay tourney = new PreliminaryDay();
 
-		//Add courts
-		tourney.addCourt("Eppley1");
-		tourney.addCourt("Eppley2");
-		tourney.addCourt("Eppley3");
-		tourney.addCourt("Eppley4");
-		tourney.addCourt("Eppley5");
+		//Set up text fields to be placed in the popup
+		JTextField firstGameTimeField = new JTextField(), minutesBetweenGamesField = new 
+				JTextField(), courtNumberField = new JTextField();
 
-		//Add timining info
-		tourney.timeOfFirstGame = "08:30";
-		tourney.minutesBetweenGames = 35;
+		//Create an object with multiple text fields to be placed in the
+		//GUI popup
+		Object[] fields = {
+				"Time of first game (hh:mm format)", firstGameTimeField,
+				"Enter minutes between games", minutesBetweenGamesField,
+				"Enter the number of courts", courtNumberField,
+		};
 
-		//Add Mens teams
-		tourney.addTeam("Northwestern","Oliff", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Miami","Miller", Gender.MEN, "21:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Indiana","Nagar", Gender.MEN, "19:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Kansas","Wiggins", Gender.MEN, "20:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Michigan","Mendelsohn", Gender.MEN, "08:00", ArrivalDay.FRIDAY);
-		tourney.addTeam("Columbia","Rapoport", Gender.MEN, "22:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Columbia","Lederer", Gender.MEN, "07:00", ArrivalDay.FRIDAY);
-		tourney.addTeam("Maryland", "Klausner", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Penn","Charnoff", Gender.MEN, "23:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Brandeis","Eisenstein", Gender.MEN, "23:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Duke","Williamson", Gender.MEN, "00:10", ArrivalDay.FRIDAY);
-		tourney.addTeam("Syracuse","Greenberg", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Yeshiva","Bokor", Gender.MEN, "20:15", ArrivalDay.THURSDAY);
-		tourney.addTeam("Yeshiva","Leifer", Gender.MEN, "20:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Chicago","Elias", Gender.MEN, "18:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Baruch","Singer", Gender.MEN, "19:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Penn State","Jones", Gender.MEN, "21:15", ArrivalDay.THURSDAY);
-		tourney.addTeam("Hopkins","Feingold", Gender.MEN, "06:00", ArrivalDay.FRIDAY);
-		tourney.addTeam("NYU","Best", Gender.MEN, "20:45", ArrivalDay.THURSDAY);
-		tourney.addTeam("Virginia","Schwartz", Gender.MEN, "22:15", ArrivalDay.THURSDAY);
-		tourney.addTeam("WashU","Helfand", Gender.MEN, "20:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Texas","Durant", Gender.MEN, "09:00", ArrivalDay.FRIDAY);
-		tourney.addTeam("Iowa","Smart", Gender.MEN, "18:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("North Carolina","Jordan", Gender.MEN, "20:10", ArrivalDay.THURSDAY);
-		//tourney.addTeam("Maryland", "Oliff", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
-		MarylandTeam marylandOliff = new MarylandTeam 
-				("Maryland", "Oliff", Gender.MEN, "20:00", ArrivalDay.THURSDAY);
-		marylandOliff.addConstraint("12:00", "14:00");
-		tourney.addTeam(marylandOliff);
+		//Run the Gui popup and retrieve info
+		JOptionPane.showConfirmDialog(null, fields,
+				"Please enter tourney info",JOptionPane.DEFAULT_OPTION);
 
-		//Add women teams
-		tourney.addTeam("HebrewU","Harris", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Baylor","Griner", Gender.WOMEN, "00:10", ArrivalDay.FRIDAY);
-		tourney.addTeam("Notre Dame","Loyd", Gender.WOMEN, "20:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Yeshiva","Gordon", Gender.WOMEN, "20:15", ArrivalDay.THURSDAY);
-		tourney.addTeam("Yeshiva","Miller", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Illinois","Retsky", Gender.WOMEN, "18:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Baruch","Stein", Gender.WOMEN, "19:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Penn State","Rosenstein", Gender.WOMEN, "21:15", ArrivalDay.THURSDAY);
-		tourney.addTeam("Maryland","Warshawsky", Gender.WOMEN, "06:00", ArrivalDay.FRIDAY);
-		tourney.addTeam("NYU","Chavel", Gender.WOMEN, "20:45", ArrivalDay.THURSDAY);
-		tourney.addTeam("Maryland", "Loh", Gender.WOMEN, "20:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Virginia","Goldsmith", Gender.WOMEN, "22:15", ArrivalDay.THURSDAY);
-		tourney.addTeam("Northwestern","Benmelech", Gender.WOMEN, "20:30", ArrivalDay.THURSDAY);
-		tourney.addTeam("Texas","Yaron", Gender.WOMEN, "09:15", ArrivalDay.FRIDAY);
-		tourney.addTeam("UMBC","Smart", Gender.WOMEN, "18:00", ArrivalDay.THURSDAY);
-		tourney.addTeam("Michigan","Miller", Gender.WOMEN, "20:10", ArrivalDay.THURSDAY);
+		//Now run the file chooser to get the input file
+		final JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Please select which excel file to use for input");
+		fc.showOpenDialog(null);
+
+		//Parse the entered data
+		tourney.timeOfFirstGame = firstGameTimeField.getText();
+		tourney.minutesBetweenGames = Long.parseLong(minutesBetweenGamesField.getText());
+		int courtNumber = Integer.parseInt(courtNumberField.getText());
+		File excelInputFile = fc.getSelectedFile();
+
+		//Add courts to the tourney based on inputted info
+		for (int index = 0; index < courtNumber; index++) {
+			tourney.addCourt("Court" + (index + 1));
+		}
+
+		//Now, go through the excel sheet with the data
+		//First, get the workbook and sheet with info
+		Workbook workbook = WorkbookFactory.create(excelInputFile);
+		Sheet tourneySheet = workbook.getSheetAt(0);
+
+		//Set up the data formatter
+		DataFormatter dataFormatter = new DataFormatter();
+
+		//Set up indexes of each variable
+		int nameIndex = 0,arrivalDayIndex = 0,arrivalTimeIndex = 0,genderIndex = 0;
+
+		//Grab the header row
+		Row headerRow = tourneySheet.getRow(0);
+
+		//Identify each column
+		for (Cell topCell: headerRow) {
+
+			//put cell contents into string form
+			String cellValue = dataFormatter.formatCellValue(topCell).toLowerCase();
+
+			//Look for column identifiers
+			//Find name index
+			if (cellValue.contains("name")) {
+				nameIndex = topCell.getColumnIndex();
+				//find gender index	
+			} else if (cellValue.contains("gender") ||cellValue.contains("tournament")) {
+				genderIndex = topCell.getColumnIndex();
+				//find arrival day index	
+			} else if (cellValue.contains("day")) {
+				arrivalDayIndex = topCell.getColumnIndex();
+				//find arrival time index
+			} else if (cellValue.contains("time")) {
+				arrivalTimeIndex = topCell.getColumnIndex();
+			}
+		}
+
+		//Now we iterate through each row
+		for (Row row: tourneySheet) {
+
+			//Set up team varables
+			String school = "", name = "", arrivalTime = "";
+			ArrivalDay arrivalDay = null;
+			Gender gender = null;
+
+			//just skip the header row
+			if (!row.equals(headerRow)) {
+
+				//Go through each row
+				for(Cell cell: row) {
+
+					//set up variables for easy reading
+					int columnIndex = cell.getColumnIndex();
+					String cellValue = dataFormatter.formatCellValue(cell);
+
+					//Figure out which cell it is
+					//If cell contains team name
+					if (columnIndex == nameIndex) {
+
+						//Get rid of spaces in team name
+						cellValue = cellValue.replace(" ", "");
+
+						//Figure out where captain name separates from the school
+						int dashIndex = cellValue.indexOf('-');
+
+						//Grab the school and the captain name
+						school = cellValue.substring(0,dashIndex);
+						name = cellValue.substring(dashIndex + 1, cellValue.length());
+
+						//If the cell contains the team's gender
+					} else if (columnIndex == genderIndex) {
+
+						//grab the gender
+						gender = cellValue.toLowerCase().equals("men") ? Gender.MEN :
+							Gender.WOMEN;
+
+						//if the cell contains arrival day	
+					} else if (columnIndex == arrivalDayIndex) {
+
+						//grab arrival day
+						arrivalDay = cellValue.toLowerCase().contains("thursday") ?
+								ArrivalDay.THURSDAY : ArrivalDay.FRIDAY;
+
+						//If the cell contains arrival time	
+					} else if (columnIndex == arrivalTimeIndex) {
+
+						//if the time is in the format h:mm, we need to put it 
+						//in the format of hh:mm with a 0 in front
+						if (cellValue.length() == 4) {
+							arrivalTime = ("00000" + cellValue).substring(cellValue.length());
+						} else {
+							arrivalTime = cellValue;
+						}
+
+
+					}
+
+				}
+
+				//Add the team (one team per row)
+				tourney.addTeam(school, name, gender, arrivalTime, arrivalDay);
+			}
+
+
+
+		}
+
 
 		//Do the magic
 		tourney.organizeTournament();
 		tourney.scheduleTournament();
 		System.out.println(tourney);
-		
+
+		//Make an output workbook
 		Workbook outputWorkbook = new XSSFWorkbook();
 		CreationHelper createHelper = outputWorkbook.getCreationHelper();
-		
+
+		//Make a sheet in the workbook
 		Sheet sheet = outputWorkbook.createSheet("Tournament");
-		
+
+		//Set the font/text attributes for the column/row headers
 		Font headerFont = outputWorkbook.createFont();
 		headerFont.setBold(true);
 		headerFont.setFontHeightInPoints((short) 14);
 		headerFont.setColor(IndexedColors.BLACK.getIndex());
-		
+
+		//Now assign that style to the header cells
 		CellStyle headerCellStyle = outputWorkbook.createCellStyle();
 		headerCellStyle.setFont(headerFont);
-		
-		Row headerRow = sheet.createRow(0);
-		
+
+		//Create the header row
+		Row headerRow2 = sheet.createRow(0);
 		int numberOfCourts = tourney.courts.size();
+
+		//create one column per each court
 		for (int i = 1; i <= numberOfCourts; i++ ) {
-			Cell cell = headerRow.createCell(i);
+
+			//Create cell with name and style
+			Cell cell = headerRow2.createCell(i);
 			cell.setCellValue(tourney.courts.get(i-1).name);
 			cell.setCellStyle(headerCellStyle);
 		}
-		
+
+
+		//Iterate though each time slot
 		int rowNum = 1;
-		
 		for (TimeSlot timeSlot: tourney.schedule) {
+
+			//Each row represents a time slot. Here the row number is updated
+			//after being used
 			Row row = sheet.createRow(rowNum++);
-			
+
+			//The first column in each row has the time  ...
 			row.createCell(0).setCellValue(timeSlot.time.toString());
-			
+			//and the special header font
+			row.getCell(0).setCellStyle(headerCellStyle);
+
+			//Now go through each column in that row, which is denoted by each
+			//game at that time slot
 			int colNum = 1;
 			for (Game game: timeSlot.games) {
-				
-				
+
+				//Create the ceell
 				row.createCell(colNum++).setCellValue(game.toString());
-				
+
 			}
 		}
-		
-		for (int i = 0; i < numberOfCourts; i++) {
+
+		//Resize all the columns
+		for (int i = 0; i < numberOfCourts + 1; i++) {
 			sheet.autoSizeColumn(i);
 		}
-		
-		FileOutputStream fileOutput = new FileOutputStream("C:\\\\Users\\\\Natan OIiff\\\\Documents\\\\sample.xlsx");
+
+		//Create the output file in the user's desktop
+		String outputFilePath = System.getProperty("user.home") + "\\Desktop\\NHBT_schedule.xlsx";
+		File outputFile = new File(outputFilePath);
+
+		//create and output stream and write to it
+		FileOutputStream fileOutput = new FileOutputStream(outputFile);
 		outputWorkbook.write(fileOutput);
 		fileOutput.close();
 		outputWorkbook.close();
@@ -223,6 +303,7 @@ public class PreliminaryDay {
 
 		//Keep trying add games until viable solution is found
 		while (!validTourney) {
+			System.out.println("attempt");
 			//clear games out
 			for (Game game: games) {
 				game.awayTeam.gameTimes.clear();
@@ -257,8 +338,7 @@ public class PreliminaryDay {
 				return false;
 			}
 
-/*			System.out.println("Game Number " + index++ + " Placed");
-*/		}
+		}
 
 		Collections.sort(schedule);
 		return true;
@@ -442,19 +522,27 @@ public class PreliminaryDay {
 
 		do {
 
-			//Check if the division doesn't contain the school
-			if (!division.schools.contains(teamsCopy.get(index).school)){
+			try {
 
-				//Add school,
-				division.add(teamsCopy.get(index));
-				//Remove it from the list
-				teamsCopy.remove(index);
-				//Change boolean to reflect that
+				//Check if the division doesn't contain the school
+				if (!division.schools.contains(teamsCopy.get(index).school)){
+
+					//Add school,
+					division.add(teamsCopy.get(index));
+					//Remove it from the list
+					teamsCopy.remove(index);
+					//Change boolean to reflect that
+					viableTeamFound = true;
+
+					//If not found, move the index to check the next team
+				} else {
+					index++;
+				}
+
+			} catch (IndexOutOfBoundsException e) {
+				division.add(teamsCopy.get(index-1));
+				teamsCopy.remove(index-1);
 				viableTeamFound = true;
-
-				//If not found, move the index to check the next team
-			} else {
-				index++;
 			}
 
 			//Keep going through a viable team is found	
